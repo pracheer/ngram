@@ -2,22 +2,22 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 public class Node {
-	char content_;
+	String content_;
 	boolean marker_; 
 	int count_;
 	Collection<Node> children_;
 
-	public Node(char c){
+	public Node(String str){
 		children_ = new LinkedList<Node>();
 		marker_ = false;
-		content_ = c;
+		content_ = str;
 		count_ = 0;
 	}
 
-	public Node subNode(char c){
+	public Node subNode(String str){
 		if(children_!=null){
 			for(Node eachChild:children_){
-				if(eachChild.content_ == c){
+				if(eachChild.content_.equals(str)){
 					return eachChild;
 				}
 			}

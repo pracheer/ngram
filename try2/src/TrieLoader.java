@@ -3,11 +3,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 // TODO: 1.) print  2.) add count  3.) hashmap  4.) char to string
+// TODO: 5.) change search function to return count of any n gram
 public class TrieLoader {
 
 	public static Trie trieDSA;
 
 	public static void main(String[] args) {
+		//HashMap map = new HashMap<String, Trie>();
 		TrieLoader trieLoader = new TrieLoader();
 		trieLoader.load();
 		//new TrieTestFrame();
