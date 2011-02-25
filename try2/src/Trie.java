@@ -16,7 +16,7 @@ public class Trie{
 				current = child;
 			}
 			else{
-				current.children_.add(new Node(str.substring(i,i+1)));
+				current.children_.put(str.substring(i, i+1), new Node(str.substring(i,i+1)));
 				current = current.subNode(str.substring(i,i+1));
 			}
 			// Set marker to indicate end of the word
@@ -36,16 +36,27 @@ public class Trie{
 				else
 					current = current.subNode(str.substring(i,i+1));
 			}
-			/* 
-			 * This means that a string exists, but make sure its
-			 * a word by checking its 'marker' flag
-			 */
+			
 			if (current.marker_ == true)
 				return true;
 			else
 				return false;
 		}
 		return false; 
+	}
+	
+	public long giveCount(String str){
+		Node current = root_;
+		while(current != null){
+			for(int i=0;i<str.length();i++){    
+				if(current.subNode(str.substring(i,i+1)) == null)
+					return -1;
+				else
+					current = current.subNode(str.substring(i,i+1));
+			}
+			return current.count_;
+		}
+		return -1; 
 	}
 
 	public void print(){
