@@ -1,4 +1,5 @@
 import java.util.*;
+import java.io.*;
 
 public class Node {
 	String content_;
@@ -26,16 +27,16 @@ public class Node {
 		return null;
 	}
 
-	public void print(String gen){
+	public void print(Writer out, String gen) throws IOException{
 		if(children_!=null){
 			Iterator<String> iterator = children_.keySet().iterator();
 			while(iterator.hasNext()) {//Node eachChild:children_){
 				Node child = children_.get(iterator.next());
-				child.print( gen + content_ + " ");
+				child.print( out, gen + content_ + " ");
 			}
 		} 
 		if(marker_ == true) {
-			System.out.println(gen + content_ + " " + Long.toString(count_));
+			out.write(gen + content_ + " " + Long.toString(count_)+"\n");
 		}
 	}
 }

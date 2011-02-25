@@ -9,14 +9,13 @@ public class Ngram {
 		trie_ = new Trie();
 		N = n;
 	}
-	
-	public String[] strToList(String str) {
+	//TODO: remove check before submission
+	public void checkLength(String str) {
 		String[] list = str.split(" ");
 		if (list.length != this.N) {
 			System.err.println("EXITING");
 			System.exit(0);
 		}
-		return list;
 	}
 	
 	public void loadfile(String filename) {
@@ -30,7 +29,7 @@ public class Ngram {
 				nWord++;
 				if (N == 1){
 					wordbuf = word;
-					strToList(wordbuf);
+					checkLength(wordbuf);
 					trie_.insert(wordbuf);
 				} else if (nWord == 1) {
 					wordbuf = word;
@@ -38,13 +37,13 @@ public class Ngram {
 					wordbuf = wordbuf + " " + word;
 				} else if (nWord == N) {
 					wordbuf = wordbuf + " " + word;
-					strToList(wordbuf);
+					checkLength(wordbuf);
 					trie_.insert(wordbuf);
 				} else {
 					int idx = wordbuf.indexOf(' ');
 					String substr = wordbuf.substring(idx+1); 
 					wordbuf = substr + " " + word;
-					strToList(wordbuf);
+					checkLength(wordbuf);
 					trie_.insert(wordbuf);
 				}
 			}
@@ -56,7 +55,10 @@ public class Ngram {
 	public static void main(String[] args) {
 		Ngram ngram_ = new Ngram(2);
 		ngram_.loadfile("src/words2.txt");
-		trie_.print();
+		System.err.println("Done 1");
+		ngram_.loadfile("src/fbis.test");
+		System.err.println("Done 2");
+		trie_.print("src/out.txt");
 	}
 }
 
