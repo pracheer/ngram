@@ -1,3 +1,5 @@
+import java.io.*;
+
 public class Trie{
 	private Node root_;
 
@@ -8,7 +10,7 @@ public class Trie{
 	public void insert(String str){
 		Node current = root_; 
 		String[] list = str.split(" "); 
-		if(str.length()==0) //For an empty character
+		if(list.length == 0) //For an empty character
 			current.marker_=true;
 		for(int i=0;i<list.length;i++){
 			++current.count_;
@@ -28,41 +30,38 @@ public class Trie{
 		} 
 	}
 
-	public boolean search(String str){
+	public Node search(String str){
 		Node current = root_;
 		String[] list = str.split(" ");
 		while(current != null){
 			for(int i=0;i<list.length;i++){    
 				if(current.subNode(list[i]) == null)
-					return false;
+					return null;
 				else
 					current = current.subNode(list[i]);
 			}
-			
-			if (current.marker_ == true)
-				return true;
-			else
-				return false;
+			return current;
 		}
-		return false; 
+		return null; 
 	}
-	
+
 	public long giveCount(String str){
-		Node current = root_;
-		String[] list = str.split(" ");
-		while(current != null){
-			for(int i=0;i<list.length;i++){    
-				if(current.subNode(list[i]) == null)
-					return -1;
-				else
-					current = current.subNode(list[i]);
-			}
-			return current.count_;
+		Node node = search(str);
+		if(node != null){
+			return node.count_;
 		}
 		return -1; 
 	}
 
-	public void print(){
-		root_.print("");
+	public void print(String filename){
+		File file = new File(filename);
+	    Writer output;
+		try {
+			output = new BufferedWriter(new FileWriter(file));
+			root_.print(output, "");
+			output.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}    
 	}
 }
