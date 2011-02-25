@@ -1,6 +1,4 @@
 import java.util.*;
-//import java.util.HashMap;
-//import java.util.Iterator;
 
 public class Node {
 	String content_;
@@ -33,7 +31,7 @@ public class Node {
 			Iterator<String> iterator = children_.keySet().iterator();
 			while(iterator.hasNext()) {//Node eachChild:children_){
 				Node child = children_.get(iterator.next());
-				child.print( gen + content_);
+				child.print( gen + content_ + " ");
 			}
 		} 
 		if(marker_ == true) {
