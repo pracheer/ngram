@@ -58,7 +58,8 @@ public class Ngram {
 		System.err.println("Done 1");
 		ngram_.loadfile("src/fbis.test");
 		System.err.println("Done 2");
-		trie_.print("src/out.txt");
+		//trie_.print("src/out.txt");
+		trie_.printTimeAnalysis();
 	}
 }
 

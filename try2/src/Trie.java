@@ -2,19 +2,29 @@ import java.io.*;
 
 public class Trie{
 	private Node root_;
+	public Stopwatch totalTime = new Stopwatch();
+	public Stopwatch splitTime = new Stopwatch();
+	public Stopwatch forLoopTime = new Stopwatch();
+	public Stopwatch lookUpTime = new Stopwatch();
 
 	public Trie(){
-		root_ = new Node("$Root$"); 
+		root_ = new Node("$Root$");
 	}
 	
 	public void insert(String str){
+		totalTime.start();
 		Node current = root_; 
-		String[] list = str.split(" "); 
+		splitTime.start();
+		String[] list = str.split(" ");
+		splitTime.stop();
 		if(list.length == 0) //For an empty character
 			current.marker_=true;
+		forLoopTime.start();
 		for(int i=0;i<list.length;i++){
 			++current.count_;
+			lookUpTime.start();
 			Node child = current.subNode(list[i]);
+			lookUpTime.stop();
 			if(child!=null){ 
 				current = child;
 			}
@@ -27,7 +37,16 @@ public class Trie{
 				current.marker_ = true;
 				++current.count_;
 			}
-		} 
+		}
+		forLoopTime.stop();
+		totalTime.stop();
+	}
+	
+	public void printTimeAnalysis () {
+		System.out.println("Total time spent in insert function is: " + totalTime.getElapsedTime());
+		System.out.println("Total time spent in splitting is: " + splitTime.getElapsedTime());
+		System.out.println("Total time spent in for loop is: " + forLoopTime.getElapsedTime());
+		System.out.println("Total time spent in lookup is: " + lookUpTime.getElapsedTime());
 	}
 
 	public Node search(String str){
