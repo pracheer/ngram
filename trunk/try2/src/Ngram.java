@@ -51,15 +51,26 @@ public class Ngram {
 			e.printStackTrace();
 		}
 	}
+	public void genSentence (int n) {
+		/* n = 1 => Unigrams, n=2 => bigrams and so on */
+		if (n>N) {
+			System.err.println("Ngram model does not have enough information, exiting...");
+			return;
+		}
+		trie_.genNgram(n);
+	}
 	
 	public static void main(String[] args) {
 		Ngram ngram_ = new Ngram(2);
 		ngram_.loadfile("src/words2.txt");
 		System.err.println("Done 1");
-		ngram_.loadfile("src/fbis.test");
+		//ngram_.loadfile("src/fbis.test");
 		System.err.println("Done 2");
 		//trie_.print("src/out.txt");
 		trie_.printTimeAnalysis();
+		trie_.checkChildCount();
+		ngram_.genSentence(1);
 	}
+	
 }
 

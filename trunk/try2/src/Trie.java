@@ -1,14 +1,15 @@
 import java.io.*;
+import java.util.*;
 
 public class Trie{
 	private Node root_;
-	public Stopwatch totalTime = new Stopwatch();
-	public Stopwatch splitTime = new Stopwatch();
-	public Stopwatch forLoopTime = new Stopwatch();
-	public Stopwatch lookUpTime = new Stopwatch();
+	private Stopwatch totalTime = new Stopwatch();
+	private Stopwatch splitTime = new Stopwatch();
+	private Stopwatch forLoopTime = new Stopwatch();
+	private Stopwatch lookUpTime = new Stopwatch();
 
 	public Trie(){
-		root_ = new Node("$Root$");
+		root_ = new Node("");
 	}
 	
 	public void insert(String str){
@@ -48,6 +49,9 @@ public class Trie{
 		System.out.println("Total time spent in for loop is: " + forLoopTime.getElapsedTime());
 		System.out.println("Total time spent in lookup is: " + lookUpTime.getElapsedTime());
 	}
+	public void checkChildCount() {
+		root_.checkChildCount();
+	}
 
 	public Node search(String str){
 		Node current = root_;
@@ -82,5 +86,15 @@ public class Trie{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}    
+	}
+
+	public void genNgram(int n) {
+		String str = "";
+		Random randomGenerator = new Random();
+		for (int i =0; i < 10; i++) {
+			int randomInt = randomGenerator.nextInt((int)root_.count_);
+			str += " " + root_.giveNthChildWord(randomInt + 1);
+		}
+		System.out.println(str);
 	}
 }

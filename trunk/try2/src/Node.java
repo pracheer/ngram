@@ -24,7 +24,7 @@ public class Node {
 	public void print(Writer out, String gen) throws IOException{
 		if(children_!=null){
 			Iterator<String> iterator = children_.keySet().iterator();
-			while(iterator.hasNext()) {//Node eachChild:children_){
+			while(iterator.hasNext()) {
 				Node child = children_.get(iterator.next());
 				child.print( out, gen + content_ + " ");
 			}
@@ -32,5 +32,35 @@ public class Node {
 		if(marker_ == true) {
 			out.write(gen + content_ + " " + Long.toString(count_)+"\n");
 		}
+	}
+
+	public void checkChildCount(){
+		long childCount = 0;
+		if(children_!=null){
+			Iterator<String> iterator = children_.keySet().iterator();
+			while(iterator.hasNext()) {
+				Node child = children_.get(iterator.next());
+				//child.checkChildCount();
+				childCount += child.count_;
+			}
+		} 
+		if(marker_ != true) {			
+			assert(childCount != this.count_);
+			System.out.println("we got " + childCount + " and we shud have " + this.count_);
+		}
+	}
+	
+	public String giveNthChildWord(long N) {
+		long childCount = 0;
+		Iterator<String> iterator = children_.keySet().iterator();
+		if(children_ == null)
+			return "";
+		while(iterator.hasNext()) {
+			Node child = children_.get(iterator.next());
+			childCount += child.count_;
+			if (childCount >= N)
+				return child.content_;
+		}
+		return "";	
 	}
 }
