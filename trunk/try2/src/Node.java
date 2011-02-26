@@ -16,13 +16,7 @@ public class Node {
 
 	public Node subNode(String str){
 		if(children_!=null){
-			Iterator<String> iterator = children_.keySet().iterator();
-			while(iterator.hasNext()) {//Node eachChild:children_){
-				Node child = children_.get(iterator.next());
-				if(child.content_.equals(str)){
-					return child;
-				}
-			}
+			return children_.get(str);
 		}
 		return null;
 	}
