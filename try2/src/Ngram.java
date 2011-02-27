@@ -2,8 +2,8 @@ import java.io.*;
 import java.util.Scanner;
 
 public class Ngram {
-	public static Trie trie_;
-	final public int N;
+	private static Trie trie_;
+	final private int N;
 	
 	public Ngram(int n) {
 		trie_ = new Trie();
@@ -60,16 +60,45 @@ public class Ngram {
 		trie_.genNgram(n);
 	}
 	
+	public void preprocessFile (String filename, String newFilename) {
+		String[] tokenList = null;
+		Scanner in;
+		Writer out;
+		try {
+			in = new Scanner(new File(filename));
+			out = new BufferedWriter(new FileWriter(new File(newFilename)));
+			while(in.hasNext("\\S+")) {
+				String word = in.next("\\S+");
+				tokenList = new Tokenizer(word).tokenize();
+				for( int i = 0; i< tokenList.length; i++) {
+					out.write(tokenList[i]+ " ");
+				}
+			}
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static void main(String[] args) {
 		Ngram ngram_ = new Ngram(2);
-		ngram_.loadfile("src/words2.txt");
-		System.err.println("Done 1");
+		
+		ngram_.preprocessFile("test/sample.txt", "test/tokens.txt");
+		ngram_.preprocessFile("test/test.txt", "test/tokens.txt");
+//		ngram_.preprocessFile("test/fbis.train", "test/tokens.txt");
+		
+		ngram_.loadfile("test/tokens.txt");
 		//ngram_.loadfile("src/fbis.test");
-		System.err.println("Done 2");
-		//trie_.print("src/out.txt");
+		trie_.print("test/out.txt");
 		trie_.printTimeAnalysis();
 		trie_.checkChildCount();
-		ngram_.genSentence(1);
+		//ngram_.genSentence(1);
+		
+		
+//		String str = "(we) 'got' hud'nt 18.5 would've don't; 18?. i- saw 23. 23.0";
+//		Tokenizer et = new Tokenizer(str);
+//		et.tokenize();
+//		et.printTokens();
 	}
 	
 }
