@@ -1,0 +1,5 @@
+String str = "(we) 'got' hud'nt 18.5 would've don't; 18?. i- saw 23. 23.0";
+Aarau's
+i saw him
+i saw her
+him i her him
