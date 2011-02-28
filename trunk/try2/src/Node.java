@@ -40,7 +40,6 @@ public class Node {
 			Iterator<String> iterator = children_.keySet().iterator();
 			while(iterator.hasNext()) {
 				Node child = children_.get(iterator.next());
-				//child.checkChildCount();
 				childCount += child.count_;
 			}
 		} 
@@ -48,6 +47,13 @@ public class Node {
 			assert(childCount != this.count_);
 			System.out.println("we got " + childCount + " and we shud have " + this.count_);
 		}
+	}
+	
+	public long giveVocabCount(){
+		if(children_ !=null)
+			return children_.keySet().size();
+		else
+			return 0;
 	}
 	
 	public String giveNthChildWord(long N) {
