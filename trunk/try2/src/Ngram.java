@@ -172,22 +172,84 @@ public class Ngram {
 		System.out.println("Total time spent in tokenizing is: " + b.getElapsedTime());
 		System.out.println("Total time spent in insert func call is: " + c.getElapsedTime());
 	}
+	public void menu(Ngram ngram_) {
+		while(true) {
+			int opt = 1;
+			switch (opt){
+			case 1:
+				System.out.println("Unigram:");
+				System.out.println(ngram_.genSentence(1));
+				System.out.println("Bigram:");
+				System.out.println(ngram_.genSentence(2));
+				System.out.println("Trigram:");
+				System.out.println(ngram_.genSentence(3));
+				break;
+			case 2:
+				
+			}
+		}
+	}
+	public static void  perpExperimentLambda(Ngram ngram_, String validationfile, String testfile) {
+		int smoothingAlgo = 2;
+		int perplexityModelN = 2;
+//		double[] lambda = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1};
+		double[] lambda = { 0.2, 0.4, 0.6, 0.8, 1};
+		double[] perplexityVal = new double[lambda.length];
+		double[] perplexityTest = new double[lambda.length];
+		
+		for(int i = 0 ; i<lambda.length; i++) {
+			perplexityTest[i] = ngram_.perplexityFile(testfile, 
+									perplexityModelN, smoothingAlgo, lambda[i]);
+			perplexityVal[i] = ngram_.perplexityFile(testfile, 
+					perplexityModelN, smoothingAlgo, lambda[i]);
+		}
+
+		System.out.println("********* START Bigram Perplexity Lambda Experiment ******");
+		System.out.println("Validation File:" + validationfile );
+		System.out.println("Test File:" + testfile );
+		System.out.println("Lambda : Perplex_Val : Perp_test ");
+		for(int i = 0 ; i<lambda.length; i++) {
+			System.out.println(lambda[i] + " : " 
+							+ perplexityVal[i] + " : "
+							+ perplexityTest[i] );
+		}
+		System.out.println("********* END Bigram Perplexity Lambda Experiment ******");
+		
+		perplexityModelN = 1;
+		
+		for(int i = 0 ; i<lambda.length; i++) {
+			perplexityTest[i] = ngram_.perplexityFile(testfile, 
+									perplexityModelN, smoothingAlgo, lambda[i]);
+			perplexityVal[i] = ngram_.perplexityFile(testfile, 
+					perplexityModelN, smoothingAlgo, lambda[i]);
+		}
+
+		System.out.println("********* START Unigram Perplexity Lambda Experiment ******");
+		System.out.println("Validation File:" + validationfile );
+		System.out.println("Test File:" + testfile );
+		System.out.println("Lambda : Perplex_Val : Perp_test ");
+		for(int i = 0 ; i<lambda.length; i++) {
+			System.out.println(lambda[i] + " : " 
+							+ perplexityVal[i] + " : "
+							+ perplexityTest[i] );
+		}
+		System.out.println("********* END Unigram Perplexity Lambda Experiment ******");
+	}
 	public static void main(String[] args) {
 		Ngram ngram_ = new Ngram(2);
-		int smoothingAlgo = 3;
-		int perplexityModelN = 2;
-		double lambda = 1;
-		double perplexity;
 		Boolean allowUnknown = true;
+		
+		String trainfile = "test/sample.txt";
+		String validationfile = "test/sample.txt";
+		String testfile = "test/sample.txt";
+		
 		ngram_.trainFile("test/test.txt", "test/tokens.txt", true);
-		ngram_.trainFile("test/sample.txt", "test/tokens.txt", true);
+		ngram_.trainFile(trainfile, "test/tokens.txt", true);
 		//ngram_.trainFile("test/fbis_full.train", "test/tokens.txt", true);
 		
-		perplexity = ngram_.perplexityFile("test/sample.txt", perplexityModelN, smoothingAlgo, lambda);
+		perpExperimentLambda(ngram_,validationfile,testfile );
 		
-		System.out.println("Perplexity is: " + perplexity);
-		
-		trie_.print("test/trie.txt");
+//		trie_.print("test/trie.txt");
 		trie_.printTimeAnalysis();
 		ngram_.printTimeAnalysis();
 //		Tokenizer.printTimeAnalysis();
