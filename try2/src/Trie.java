@@ -3,29 +3,32 @@ import java.util.*;
 
 public class Trie{
 	private Node root_;
-	private Stopwatch totalTime = new Stopwatch();
-	private Stopwatch splitTime = new Stopwatch();
-	private Stopwatch forLoopTime = new Stopwatch();
-	private Stopwatch lookUpTime = new Stopwatch();
+	
+	private TreeMap <Long,Long> unigramTuringMap = null;
+	private TreeMap <Long, Long> bigramTuringMap = null;
+//	private Stopwatch totalTime = new Stopwatch();
+//	private Stopwatch splitTime = new Stopwatch();
+//	private Stopwatch forLoopTime = new Stopwatch();
+//	private Stopwatch lookUpTime = new Stopwatch();
 
 	public Trie(){
 		root_ = new Node("");
 	}
 	
 	public void insert(String str){
-		totalTime.start();
+//		totalTime.start();
 		Node current = root_; 
-		splitTime.start();
+//		splitTime.start();
 		String[] list = str.split(" ");
-		splitTime.stop();
+//		splitTime.stop();
 		if(list.length == 0) //For an empty character
 			current.marker_=true;
-		forLoopTime.start();
+//		forLoopTime.start();
 		for(int i=0;i<list.length;i++){
 			++current.count_;
-			lookUpTime.start();
+//			lookUpTime.start();
 			Node child = current.subNode(list[i]);
-			lookUpTime.stop();
+//			lookUpTime.stop();
 			if(child!=null){ 
 				current = child;
 			}
@@ -39,10 +42,43 @@ public class Trie{
 				++current.count_;
 			}
 		}
-		forLoopTime.stop();
-		totalTime.stop();
+//		forLoopTime.stop();
+//		totalTime.stop();
 	}
 	
+	private void updateTuringMapCount (Node node, TreeMap<Long,Long> map) {
+		if (map.containsKey(node.count_)){
+			Long count = map.get(node.count_);
+			map.put(node.count_, count+1);
+		} else {
+			map.put(node.count_, (long)1);
+		}
+	}
+	private void createUnigramTuringMap () {
+		if (unigramTuringMap != null)
+			return;
+		if (root_.children_ == null)
+			return;
+		unigramTuringMap = new TreeMap<Long, Long>();
+		Collection<Node> uniGrams = root_.children_.values();
+		for (Node unigram:uniGrams) {
+			updateTuringMapCount(unigram, unigramTuringMap);
+		}
+	}
+	private void createBigramTuringMap () {
+		if (bigramTuringMap != null)
+			return;
+		if(root_.children_ ==null)
+			return;
+		bigramTuringMap = new TreeMap<Long, Long>();
+		Collection<Node> uniGrams = root_.children_.values();
+		for (Node unigram:uniGrams) {
+			Collection<Node> biGrams = unigram.children_.values();
+			for (Node bigram:biGrams) {				
+				updateTuringMapCount(bigram, bigramTuringMap);
+			}
+		}
+	}
 	public double perplexityGram (String pred, String succ, int smoothingAlgo, double lambda) {
 		double val = 0;
 		if (this.search(pred)== null)
@@ -69,7 +105,9 @@ public class Trie{
 			break;
 		case 3:
 			// Good turing smoothing
-			// TODO create a good turing table
+			//  create unigram and bigrams good turing table
+			createUnigramTuringMap();
+			createBigramTuringMap();
 			break;
 			
 		default:
@@ -81,10 +119,10 @@ public class Trie{
 		return val;
 	}
 	public void printTimeAnalysis () {
-		System.out.println("Total time spent in insert function is: " + totalTime.getElapsedTime());
-		System.out.println("Total time spent in splitting is: " + splitTime.getElapsedTime());
-		System.out.println("Total time spent in for loop is: " + forLoopTime.getElapsedTime());
-		System.out.println("Total time spent in lookup is: " + lookUpTime.getElapsedTime());
+//		System.out.println("Total time spent in insert function is: " + totalTime.getElapsedTime());
+//		System.out.println("Total time spent in splitting is: " + splitTime.getElapsedTime());
+//		System.out.println("Total time spent in for loop is: " + forLoopTime.getElapsedTime());
+//		System.out.println("Total time spent in lookup is: " + lookUpTime.getElapsedTime());
 	}
 	public void checkChildCount() {
 		root_.checkChildCount();
