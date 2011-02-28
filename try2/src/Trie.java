@@ -43,6 +43,43 @@ public class Trie{
 		totalTime.stop();
 	}
 	
+	public double perplexityGram (String pred, String succ, int smoothingAlgo, double lambda) {
+		double val = 0;
+		if (this.search(pred)== null)
+			pred = "</UNK>";
+		if (this.search(succ)== null)
+			succ = "</UNK>";
+		double predCount = this.giveCount(pred);
+		double jointCount = this.giveCount(pred + " " + succ);
+		double vocabCount = root_.giveVocabCount();
+		if (predCount <= 0) {
+			System.err.println("Problem with perplexity");
+			System.exit(0);
+		}
+		switch (smoothingAlgo){
+		case 1:
+			// Add one smoothing
+			jointCount = jointCount + 1;
+			predCount = predCount + vocabCount;
+			break;
+		case 2:
+			// Add lambda smoothing
+			jointCount = jointCount + lambda;
+			predCount = predCount + lambda*vocabCount;
+			break;
+		case 3:
+			// Good turing smoothing
+			// TODO create a good turing table
+			break;
+			
+		default:
+			System.err.println("Problem with switchcase");
+			System.exit(0);
+		}
+		val = jointCount/predCount;
+		val = Math.log10(val);
+		return val;
+	}
 	public void printTimeAnalysis () {
 		System.out.println("Total time spent in insert function is: " + totalTime.getElapsedTime());
 		System.out.println("Total time spent in splitting is: " + splitTime.getElapsedTime());
@@ -55,7 +92,11 @@ public class Trie{
 
 	public Node search(String str){
 		Node current = root_;
-		String[] list = str.split(" ");
+		if(str.equals(""))
+			return root_;
+		
+		String[] list = str.trim().split(" ");
+		
 		while(current != null){
 			for(int i=0;i<list.length;i++){    
 				if(current.subNode(list[i]) == null)
@@ -73,7 +114,7 @@ public class Trie{
 		if(node != null){
 			return node.count_;
 		}
-		return -1; 
+		return 0; 
 	}
 
 	public void print(String filename){
@@ -88,13 +129,15 @@ public class Trie{
 		}    
 	}
 
-	public void genNgram(int n) {
-		String str = "";
-		Random randomGenerator = new Random();
-		for (int i =0; i < 10; i++) {
-			int randomInt = randomGenerator.nextInt((int)root_.count_);
-			str += " " + root_.giveNthChildWord(randomInt + 1);
+	public String genSuccWord(String predecessor) {
+		String ret = "";
+		Node currNode = this.search(predecessor);
+		if(currNode == null) {
+			currNode = root_;
 		}
-		System.out.println(str);
+		Random randomGenerator = new Random();
+		int randomInt = randomGenerator.nextInt((int)currNode.count_);
+		ret = currNode.giveNthChildWord(randomInt + 1);
+		return ret;
 	}
 }
