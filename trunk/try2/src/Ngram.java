@@ -132,8 +132,8 @@ public class Ngram {
 	
 	public double perplexityFile (String filename, int modelN, int smoothingAlgo, Double lambda ) {
 		String tokenList = null;
-		String pred = "";
-		String succ = "";
+		String pred = "<S>";
+		String succ = "<S>";
 		double denomAcc = 0;
 		double nTokens = 0;
 		Scanner in;
@@ -174,14 +174,14 @@ public class Ngram {
 	}
 	public static void main(String[] args) {
 		Ngram ngram_ = new Ngram(2);
-		int smoothingAlgo = 2;
-		int perplexityModelN = 1;
+		int smoothingAlgo = 3;
+		int perplexityModelN = 2;
 		double lambda = 1;
 		double perplexity;
 		Boolean allowUnknown = true;
 		ngram_.trainFile("test/test.txt", "test/tokens.txt", true);
 		ngram_.trainFile("test/sample.txt", "test/tokens.txt", true);
-		ngram_.trainFile("test/fbis_full.train", "test/tokens.txt", true);
+		//ngram_.trainFile("test/fbis_full.train", "test/tokens.txt", true);
 		
 		perplexity = ngram_.perplexityFile("test/sample.txt", perplexityModelN, smoothingAlgo, lambda);
 		
