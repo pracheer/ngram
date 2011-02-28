@@ -4,8 +4,8 @@ import java.util.*;
 public class Trie{
 	private Node root_;
 	
-	private TreeMap <Long,Long> unigramTuringMap = null;
-	private TreeMap <Long, Long> bigramTuringMap = null;
+	private TreeMap <Long,Double> unigramTuringMap = null;
+	private TreeMap <Long, Double> bigramTuringMap = null;
 //	private Stopwatch totalTime = new Stopwatch();
 //	private Stopwatch splitTime = new Stopwatch();
 //	private Stopwatch forLoopTime = new Stopwatch();
@@ -46,12 +46,12 @@ public class Trie{
 //		totalTime.stop();
 	}
 	
-	private void updateTuringMapCount (Node node, TreeMap<Long,Long> map) {
+	private void updateTuringMapCount (Node node, TreeMap<Long,Double> map) {
 		if (map.containsKey(node.count_)){
-			Long count = map.get(node.count_);
+			Double count = map.get(node.count_);
 			map.put(node.count_, count+1);
 		} else {
-			map.put(node.count_, (long)1);
+			map.put(node.count_, (double)1);
 		}
 	}
 	private void createUnigramTuringMap () {
@@ -59,7 +59,7 @@ public class Trie{
 			return;
 		if (root_.children_ == null)
 			return;
-		unigramTuringMap = new TreeMap<Long, Long>();
+		unigramTuringMap = new TreeMap<Long, Double>();
 		Collection<Node> uniGrams = root_.children_.values();
 		for (Node unigram:uniGrams) {
 			updateTuringMapCount(unigram, unigramTuringMap);
@@ -70,14 +70,17 @@ public class Trie{
 			return;
 		if(root_.children_ ==null)
 			return;
-		bigramTuringMap = new TreeMap<Long, Long>();
+		double totalSeenBigrams = 0;
+		bigramTuringMap = new TreeMap<Long, Double>();
 		Collection<Node> uniGrams = root_.children_.values();
 		for (Node unigram:uniGrams) {
 			Collection<Node> biGrams = unigram.children_.values();
 			for (Node bigram:biGrams) {				
 				updateTuringMapCount(bigram, bigramTuringMap);
+				totalSeenBigrams += bigram.count_;
 			}
 		}
+		bigramTuringMap.put((long)0, totalSeenBigrams);
 	}
 	public double perplexityGram (String pred, String succ, int smoothingAlgo, double lambda) {
 		double val = 0;
@@ -105,13 +108,31 @@ public class Trie{
 			break;
 		case 3:
 			// Good turing smoothing
-			//  create unigram and bigrams good turing table
-			createUnigramTuringMap();
+			//  create bigrams good turing table, if not already created
 			createBigramTuringMap();
-			break;
-			
+			if (jointCount == 0) {
+				// Note: bigramTuringMap.get(0) gives total bigrams seen in corpus
+				double num = bigramTuringMap.get((long)1);
+				double denom = bigramTuringMap.get((long)0);
+				val = num/denom;
+			} else {
+				long c = (long)jointCount;
+				double Nc1 = bigramTuringMap.containsKey(c+1)?bigramTuringMap.get(c+1):0;
+				double Nc = bigramTuringMap.get(c);
+				double ratio = Nc1/Nc;
+				double totalBigrams = bigramTuringMap.get((long)0);
+				double cstar = ((double)(c+1))*(ratio) ;
+				if (cstar != 0) { 
+					val = cstar/totalBigrams;
+				} else {
+					val = Nc/totalBigrams;
+				}
+			}
+			val = Math.log10(val);
+			return val;
+//			break;
 		default:
-			System.err.println("Problem with switchcase");
+			System.err.println("Problem with perplexity switchcase");
 			System.exit(0);
 		}
 		val = jointCount/predCount;
