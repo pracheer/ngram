@@ -109,6 +109,7 @@ public class Trie{
 		case 3:
 			// Good turing smoothing
 			//  create bigrams good turing table, if not already created
+			createUnigramTuringMap();
 			createBigramTuringMap();
 			if (jointCount == 0) {
 				// Note: bigramTuringMap.get(0) gives total bigrams seen in corpus
@@ -138,6 +139,28 @@ public class Trie{
 		val = jointCount/predCount;
 		val = Math.log10(val);
 		return val;
+	}
+	public void printTuringMaps (String filename) {
+		File file = new File(filename);
+	    Writer output;
+		try {
+			output = new BufferedWriter(new FileWriter(file));
+			output.write("******* Printing Unigram Map ************");
+			Iterator<Map.Entry<Long, Double>> iterator = unigramTuringMap.entrySet().iterator();
+			while(iterator.hasNext()) {
+				Map.Entry<Long, Double> elem = iterator.next();
+				output.write(elem.getKey()+" : "+elem.getValue()+"\n");
+			}
+			output.write("******* Printing Bigram Map ************");
+			iterator = bigramTuringMap.entrySet().iterator();
+			while(iterator.hasNext()) {
+				Map.Entry<Long, Double> elem = iterator.next();
+				output.write(elem.getKey()+" : "+elem.getValue()+"\n");
+			}
+			output.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}  
 	}
 	public void printTimeAnalysis () {
 //		System.out.println("Total time spent in insert function is: " + totalTime.getElapsedTime());
