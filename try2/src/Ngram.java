@@ -263,12 +263,13 @@ public class Ngram {
 		String testfile = "test/sample.txt";
 		
 		ngram_.trainFile("test/test.txt", "test/tokens.txt", true);
-		ngram_.trainFile(trainfile, "test/tokens.txt", true);
+		//ngram_.trainFile(trainfile, "test/tokens.txt", true);
 		//ngram_.trainFile("test/fbis_full.train", "test/tokens.txt", true);
 		
 		perpExperimentLambda(ngram_,validationfile,testfile );
 		perpExperimentTuring(ngram_,validationfile,testfile );
-//		trie_.print("test/trie.txt");
+		trie_.printTuringMaps("test/turing.txt");
+		trie_.print("test/trie.txt");
 		trie_.printTimeAnalysis();
 		ngram_.printTimeAnalysis();
 //		Tokenizer.printTimeAnalysis();
