@@ -235,6 +235,25 @@ public class Ngram {
 		}
 		System.out.println("********* END Unigram Perplexity Lambda Experiment ******");
 	}
+	public static void  perpExperimentTuring(Ngram ngram_, String validationfile, String testfile) {
+		int smoothingAlgo = 3;
+		int perplexityModelN = 2;
+		double lambda = 1;
+		double perplexityVal = 0;
+		double perplexityTest = 0;
+		
+		System.out.println("********* START Bigram Perplexity Good Turing Experiment ******");
+		System.out.println("Validation File:" + validationfile );
+		System.out.println("Test File:" + testfile );
+		perplexityTest = ngram_.perplexityFile(testfile, 
+				perplexityModelN, smoothingAlgo, lambda);
+		perplexityVal = ngram_.perplexityFile(testfile, 
+				perplexityModelN, smoothingAlgo, lambda);
+		System.out.println("Perp Val file: " + perplexityVal);
+		System.out.println("Perp Test file: " + perplexityTest);
+		System.out.println("********* END Bigram Perplexity Good Turing Experiment ******");		
+	}
+
 	public static void main(String[] args) {
 		Ngram ngram_ = new Ngram(2);
 		Boolean allowUnknown = true;
@@ -248,7 +267,7 @@ public class Ngram {
 		//ngram_.trainFile("test/fbis_full.train", "test/tokens.txt", true);
 		
 		perpExperimentLambda(ngram_,validationfile,testfile );
-		
+		perpExperimentTuring(ngram_,validationfile,testfile );
 //		trie_.print("test/trie.txt");
 		trie_.printTimeAnalysis();
 		ngram_.printTimeAnalysis();
