@@ -81,7 +81,9 @@ public class Ngram {
 			if(i==0){
 				predecessor += "<S>";
 			} else {
-				predecessor += predecessor + " " + trie_.genSuccWord(predecessor);
+				String next = trie_.genSuccWord(predecessor);
+				predecessor += predecessor + " " + next;
+				sentence += next + " ";
 			}
 		}
 		// generate next word and update predecessor
@@ -89,7 +91,7 @@ public class Ngram {
 			nextWord = trie_.genSuccWord(predecessor);
 			if (nextWord.equals("</S>")||nextWord.equals("<S>"))
 				continue;
-			sentence += " " + nextWord;
+			sentence += nextWord + " ";
 			if (n==1) { //update predecessor
 				predecessor = "";
 			} else if (n==2) {
