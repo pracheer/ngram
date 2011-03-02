@@ -6,29 +6,19 @@ public class Trie{
 	
 	private TreeMap <Long,Double> unigramTuringMap = null;
 	private TreeMap <Long, Double> bigramTuringMap = null;
-//	private Stopwatch totalTime = new Stopwatch();
-//	private Stopwatch splitTime = new Stopwatch();
-//	private Stopwatch forLoopTime = new Stopwatch();
-//	private Stopwatch lookUpTime = new Stopwatch();
 
 	public Trie(){
 		root_ = new Node("");
 	}
 	
 	public void insert(String str){
-//		totalTime.start();
 		Node current = root_; 
-//		splitTime.start();
 		String[] list = str.split(" ");
-//		splitTime.stop();
 		if(list.length == 0) //For an empty character
 			current.marker_=true;
-//		forLoopTime.start();
 		for(int i=0;i<list.length;i++){
 			++current.count_;
-//			lookUpTime.start();
 			Node child = current.subNode(list[i]);
-//			lookUpTime.stop();
 			if(child!=null){ 
 				current = child;
 			}
@@ -42,8 +32,6 @@ public class Trie{
 				++current.count_;
 			}
 		}
-//		forLoopTime.stop();
-//		totalTime.stop();
 	}
 	
 	private void updateTuringMapCount (Node node, TreeMap<Long,Double> map) {
@@ -116,7 +104,7 @@ public class Trie{
 				double num = bigramTuringMap.get((long)1);
 				double denom = bigramTuringMap.get((long)0);
 				val = num/denom;
-			} else {
+			} else if (jointCount < 4){
 				long c = (long)jointCount;
 				double Nc1 = bigramTuringMap.containsKey(c+1)?bigramTuringMap.get(c+1):0;
 				double Nc = bigramTuringMap.get(c);
@@ -128,10 +116,14 @@ public class Trie{
 				} else {
 					val = Nc/totalBigrams;
 				}
+			} else {
+				double num = bigramTuringMap.get((long)jointCount);
+				// Note: bigramTuringMap.get(0) gives total bigrams seen in corpus
+				double denom = bigramTuringMap.get((long)0);
+				val = num/denom; 
 			}
 			val = Math.log10(val);
 			return val;
-//			break;
 		default:
 			System.err.println("Problem with perplexity switchcase");
 			System.exit(0);
@@ -145,31 +137,22 @@ public class Trie{
 	    Writer output;
 		try {
 			output = new BufferedWriter(new FileWriter(file));
-			output.write("******* Printing Unigram Map ************");
+			output.write("\n******* Printing Unigram Map ************");
 			Iterator<Map.Entry<Long, Double>> iterator = unigramTuringMap.entrySet().iterator();
 			while(iterator.hasNext()) {
 				Map.Entry<Long, Double> elem = iterator.next();
-				output.write(elem.getKey()+" : "+elem.getValue()+"\n");
+				output.write("\n" + elem.getKey()+ " : " +elem.getValue());
 			}
-			output.write("******* Printing Bigram Map ************");
+			output.write("\n\n******* Printing Bigram Map ************");
 			iterator = bigramTuringMap.entrySet().iterator();
 			while(iterator.hasNext()) {
 				Map.Entry<Long, Double> elem = iterator.next();
-				output.write(elem.getKey()+" : "+elem.getValue()+"\n");
+				output.write("\n" + elem.getKey()+ " : " + elem.getValue());
 			}
 			output.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}  
-	}
-	public void printTimeAnalysis () {
-//		System.out.println("Total time spent in insert function is: " + totalTime.getElapsedTime());
-//		System.out.println("Total time spent in splitting is: " + splitTime.getElapsedTime());
-//		System.out.println("Total time spent in for loop is: " + forLoopTime.getElapsedTime());
-//		System.out.println("Total time spent in lookup is: " + lookUpTime.getElapsedTime());
-	}
-	public void checkChildCount() {
-		root_.checkChildCount();
 	}
 
 	public Node search(String str){
