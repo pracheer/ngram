@@ -70,7 +70,7 @@ public class Trie{
 		}
 		bigramTuringMap.put((long)0, totalSeenBigrams);
 	}
-	public double perplexityGram (String pred, String succ, int smoothingAlgo, double lambda) {
+	public double perplexityGram (String pred, String succ, int smoothingAlgo, double lambda, int variant) {
 		double val = 0;
 		if (this.search(pred)== null)
 			pred = "</UNK>";
@@ -104,7 +104,7 @@ public class Trie{
 				double num = bigramTuringMap.get((long)1);
 				double denom = bigramTuringMap.get((long)0);
 				val = num/denom;
-			} else if (jointCount < 4){
+			} else if (jointCount < 4 || variant == 1){
 				long c = (long)jointCount;
 				double Nc1 = bigramTuringMap.containsKey(c+1)?bigramTuringMap.get(c+1):0;
 				double Nc = bigramTuringMap.get(c);
