@@ -130,7 +130,7 @@ public class Ngram {
 		}
 	}
 	
-	public double perplexityFile (String filename, int modelN, int smoothingAlgo, Double lambda ) {
+	public double perplexityFile (String filename, int modelN, int smoothingAlgo, Double lambda, int variant ) {
 		String tokenList = null;
 		String pred = "<S>";
 		String succ = "<S>";
@@ -150,11 +150,11 @@ public class Ngram {
 					if (modelN == 1) {
 						pred = "";
 						succ = token;
-						denomAcc += trie_.perplexityGram(pred, succ, smoothingAlgo, lambda);
+						denomAcc += trie_.perplexityGram(pred, succ, smoothingAlgo, lambda, variant);
 					} else if (modelN == 2){
 						pred = succ;
 						succ = token;
-						denomAcc += trie_.perplexityGram(pred, succ, smoothingAlgo, lambda);
+						denomAcc += trie_.perplexityGram(pred, succ, smoothingAlgo, lambda, variant);
 					} else {
 						System.err.println("Perp not supported");
 					}					
@@ -204,9 +204,9 @@ public class Ngram {
 		modelN = 2;
 		for(int i = 0 ; i<lambda.length; i++) {
 			perplexityTest[i] = ngram_.perplexityFile(testfile, 
-									modelN, smoothingAlgo, lambda[i]);
+									modelN, smoothingAlgo, lambda[i],1);
 			perplexityVal[i] = ngram_.perplexityFile(validationfile, 
-					modelN, smoothingAlgo, lambda[i]);
+					modelN, smoothingAlgo, lambda[i],1);
 		}
 		for(int i = 0 ; i<lambda.length; i++) {
 			System.out.println(lambda[i] + " : " 
@@ -222,9 +222,9 @@ public class Ngram {
 		modelN = 1;
 		for(int i = 0 ; i<lambda.length; i++) {
 			perplexityTest[i] = ngram_.perplexityFile(testfile, 
-									modelN, smoothingAlgo, lambda[i]);
+									modelN, smoothingAlgo, lambda[i],1);
 			perplexityVal[i] = ngram_.perplexityFile(validationfile, 
-					modelN, smoothingAlgo, lambda[i]);
+					modelN, smoothingAlgo, lambda[i],1);
 		}
 		for(int i = 0 ; i<lambda.length; i++) {
 			System.out.println(lambda[i] + " : " 
@@ -244,11 +244,19 @@ public class Ngram {
 		System.out.println("Validation File:" + validationfile );
 		System.out.println("Test File:" + testfile );
 		perplexityTest = ngram_.perplexityFile(testfile, 
-				modelN, smoothingAlgo, lambda);
+				modelN, smoothingAlgo, lambda, 1);
 		perplexityVal = ngram_.perplexityFile(validationfile, 
-				modelN, smoothingAlgo, lambda);
-		System.out.println("Perp Val file: " + perplexityVal);
-		System.out.println("Perp Test file: " + perplexityTest);
+				modelN, smoothingAlgo, lambda, 1);
+		System.out.println("Perp Val file(Variant 1): " + perplexityVal);
+		System.out.println("Perp Test file(Variant 1): " + perplexityTest);
+		
+		perplexityTest = ngram_.perplexityFile(testfile, 
+				modelN, smoothingAlgo, lambda, 2);
+		perplexityVal = ngram_.perplexityFile(validationfile, 
+				modelN, smoothingAlgo, lambda, 2);
+		System.out.println("Perp Val file(Variant 2): " + perplexityVal);
+		System.out.println("Perp Test file(Variant 2): " + perplexityTest);
+		
 		System.out.println("********* END Bigram Perplexity Good Turing Experiment ******");		
 	}
 	
@@ -265,7 +273,7 @@ public class Ngram {
 			BufferedReader br;
 			br = new BufferedReader(new FileReader (new File("options.txt")));
 			while ((thisLine = br.readLine()) != null) {
-				if (thisLine.startsWith("#"))
+				if (thisLine.startsWith("#") || thisLine.equals(""))
 					continue;
 				String[] comp = thisLine.trim().split("\\s+");
 				if (comp.length != 2) {
