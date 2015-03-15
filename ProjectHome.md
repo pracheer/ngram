@@ -1,0 +1,1 @@
+Make a N gram model, perform sentence generation
